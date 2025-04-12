@@ -6,26 +6,26 @@
 
 #include "Sensor.h"
 
+/*
+ * @brief WaterPressureSensor class for reading water pressure sensor values from 1/8NPT.
+ * This sensor is converting water pressure to voltage using a piezoresistive sensor. 5V represents 100PSI.
+ * The sensor is connected to the ADC channel 0 and GPIO pin 26.
+ */
 class WaterPressureSensor : public Sensor
 {
 private:
-    constexpr static std::string_view UNITS_OF_MEASSUREMENT = "bar";
-    constexpr static std::string_view NAME = "Tlak vody";
+    const static std::string UNITS_OF_MEASSUREMENT;
+    const static std::string NAME;
     constexpr static int ADC_CHANNEL = 0; // ADC channel for the water pressure sensor
-    constexpr static int ADC_GPIO = 26; // GPIO pin for the water pressure sensor
-    bool present;
+    constexpr static int ADC_GPIO = 26;   // GPIO pin for the water pressure sensor
+
     double pressure;
-    std::string formattedValue;
 
     std::string formatValue();
 
 public:
-WaterPressureSensor();
-    std::string_view getName() override;
-    std::string_view getUnitsOfMeassurement() override;
-    std::string &getFormattedValue() override;
+    WaterPressureSensor();
     void read() override;
-    bool isPresent() override;
 };
 
 #endif // WATERPRESSURESENSOR_H

@@ -102,7 +102,7 @@ void MainController::updateSensors(__unused void *parameters)
         for (std::shared_ptr<Sensor> sensor : *mainController->sensors)
         {
             sensor->read();
-            std::cout << sensor->getName() << ": " << sensor->getFormattedValue() << " " << sensor->getUnitsOfMeassurement() << std::endl;
+            std::cout << sensor->getSensorName() << ": " << sensor->getFormattedValue() << " " << sensor->getUnitsOfMeasurement() << std::endl;
         }
         vTaskDelay(pdMS_TO_TICKS(10000));
     }

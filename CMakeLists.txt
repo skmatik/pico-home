@@ -90,7 +90,7 @@ include(FreeRTOS_Kernel_import.cmake)
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(pico-home Main.cpp MainController.cpp EthernetController.cpp MqttPublisher.cpp MqttFeed.cpp LcdDisplay.cpp
+add_executable(pico-home Main.cpp Sensor.cpp MainController.cpp EthernetController.cpp MqttPublisher.cpp MqttFeed.cpp LcdDisplay.cpp
 RotaryEncoder.cpp AtmosphericPressureSensor.cpp IndoorTemperatureSensor.cpp LcdMenu.cpp SensorMenuItem.cpp StringMenuItem.cpp
 WaterPressureSensor.cpp DS18B20.cpp DS18B20TemperatureSensor.cpp SerialCommunicator.cpp ArduinoTerminalReportBuilder.cpp)
 

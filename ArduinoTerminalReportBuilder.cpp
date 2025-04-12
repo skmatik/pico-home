@@ -8,7 +8,7 @@ std::vector<std::string> ArduinoTerminalReportBuilder::build() {
     std::vector<std::string> report = std::vector<std::string>();
     for (std::shared_ptr<Sensor> sensor : *sensors)
     {
-        std::string line = std::string(sensor->getName());
+        std::string line = std::string(sensor->getSensorName());
         line.append("-");
         line.append(sensor->getFormattedValue());
         report.push_back(line);

@@ -7,14 +7,14 @@
 class MQTTFeed
 {
 private:
-    std::string_view feedName;
+    std::string feedName;
     Sensor &sensor;
 
 public:
-    std::string &getFeedValue();
-    std::string_view getFeedName();
+    const std::string &getFeedValue();
+    const std::string &getFeedName();
     bool isPresent();
-    MQTTFeed(const std::string_view& feedName, Sensor &sensor);
+    MQTTFeed(const std::string& feedName, Sensor &sensor);
 };
 
 #endif // HOMEPI_MQTTFEED_H

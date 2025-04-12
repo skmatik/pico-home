@@ -10,23 +10,15 @@
 class AtmosphericPressureSensor : public Sensor
 {
 private:
-    constexpr static std::string_view UNITS_OF_MEASSUREMENT = "kPa";
-    constexpr static std::string_view NAME = "Tlak vzd";
+    const static std::string UNITS_OF_MEASSUREMENT;
+    const static std::string NAME;
 
     BMP280I2C bmp280I2c;
-    bool present;
     double pressure;
-    std::string formattedValue;
-
-    std::string formatValue();
 
 public:
     AtmosphericPressureSensor(BMP280I2C &bmp280I2c);
-    std::string_view getName() override;
-    std::string_view getUnitsOfMeassurement() override;
-    std::string &getFormattedValue() override;
     void read() override;
-    bool isPresent() override;
 };
 
 #endif // ATMOSPHERICPRESSURESENSOR_H
