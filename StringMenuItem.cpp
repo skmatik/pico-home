@@ -7,6 +7,6 @@ StringMenuItem::StringMenuItem(std::string_view text) {
     this->text.append(20 - textSize, ' ');
 }
 
-std::string_view StringMenuItem::getItemText() {
+std::string& StringMenuItem::getItemText() {
     return text;
 }

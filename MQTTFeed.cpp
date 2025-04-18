@@ -1,8 +1,8 @@
 #include "MQTTFeed.h"
 
-MQTTFeed::MQTTFeed(const std::string& feedName, Sensor &sensor) : feedName(feedName), sensor(sensor)
+MQTTFeed::MQTTFeed(const std::string& feedName, std::shared_ptr<Sensor> sensor) : feedName(feedName), sensor(sensor)
 {
-    sensor.read();
+    sensor->read();
 }
 
 const std::string &MQTTFeed::getFeedName()
@@ -12,10 +12,10 @@ const std::string &MQTTFeed::getFeedName()
 
 const std::string &MQTTFeed::getFeedValue()
 {
-    return sensor.getFormattedValue();
+    return sensor->getFormattedValue();
 }
 
 bool MQTTFeed::isPresent()
 {
-    return sensor.isPresent();
+    return sensor->isPresent();
 }

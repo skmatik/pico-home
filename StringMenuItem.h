@@ -10,7 +10,7 @@ class StringMenuItem : public MenuItem {
     std::string text;
 public:
     explicit StringMenuItem(std::string_view text);
-    std::string_view getItemText() override;
+    std::string& getItemText() override;
 };
 
 

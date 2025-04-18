@@ -19,7 +19,7 @@ public:
     bool next();
     bool previous();
     int getCurrentItemIndex() const;
-    void printMenu();
+    void printMenu(bool backlightEnabled);
     void setBackLightEnabled(bool enabled);
 };
 

@@ -23,15 +23,13 @@ Raspberry PI Pico tasks
 ## setup
 - Environment variable MQTT_PASSWORD should contain password during compilation
 - switch ioLibrary_Driver to tag 3.2.0
-
+- Donwload FreeRTOS Kernel release (e.g.: https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V11.2.0/FreeRTOS-KernelV11.2.0.zip) and extract it to ../FreeRTOS-KernelV11.2.0
 
 ## TODO
 - libraries/I2C_LCD - make a fork from https://github.com/cristiancristea00/Pico-I2C-LCD/tree/main and create library, add it as submodule to libraries folder
 - libraries/WIZnet-PICO-C/port
     - if possible create submodule with only port folder from https://github.com/WIZnet-ioNIC/WIZnet-PICO-C
     - modified files: timer.h, w5x00_spi.h - added extern C
-- libraries/ioLibrary_Driver
-    - FTPClient and TFTP not compilable, removed from libaries/CMakeLists.txt
 - libraries/bmp280_i2c - copy from pico examples
 - libraries/onewire_library - copy from prico examples - added extern C
 - Ethernet - detect disconnection
@@ -40,7 +38,8 @@ Raspberry PI Pico tasks
     - extract configuration
     - extract initialization
 - BMP280 - refactor, document, create library
-- Document FreeRTOS setup
 - Create logger
 - BMP280 Sensor is hanging
 - Serial communication is oneway
+- Multicore version
+- DS18B20 - add logic that checks if sensor with supplied code is present.

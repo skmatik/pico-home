@@ -7,6 +7,9 @@
 #include "MenuItem.h"
 #include "Sensor.h"
 
+/*
+ * @brief The SensorMenuItem class is MenuItem implementation that reads value from supplied sensor.
+ */
 class SensorMenuItem: public MenuItem {
 
 private:
@@ -14,7 +17,7 @@ private:
     std::string itemText;
 public:
     explicit SensorMenuItem(std::shared_ptr<Sensor> sensor);
-    std::string_view getItemText() override;
+    std::string& getItemText() override;
 };
 
 

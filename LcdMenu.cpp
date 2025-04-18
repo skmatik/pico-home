@@ -3,7 +3,7 @@
 #include <iostream>
 
 bool LcdMenu::next() {
-    if (currentItemIndex < (menuItems->size() - rowsVisible - 1)) {
+    if (currentItemIndex < (menuItems->size() - rowsVisible)) {
         ++currentItemIndex;
         return true;
     }
@@ -22,9 +22,10 @@ int LcdMenu::getCurrentItemIndex() const {
     return currentItemIndex;
 }
 
-void LcdMenu::printMenu() {
+void LcdMenu::printMenu(bool backlightEnabled) {
     int firstItemIndex = getCurrentItemIndex();
     lcdDisplay.topLeft();
+    lcdDisplay.configureBackLight(backlightEnabled);
 
     for (int i = 0; i < 4; i++) {
         auto item = menuItems->operator[](i + firstItemIndex).get();
@@ -41,5 +42,5 @@ LcdMenu::LcdMenu(LcdDisplay &lcdDisplay, std::shared_ptr<std::vector<std::shared
 }
 
 void LcdMenu::setBackLightEnabled(bool enabled) {
-    //lcdDriver->setBackLight(enabled);
+    lcdDisplay.configureBackLight(enabled);
 }

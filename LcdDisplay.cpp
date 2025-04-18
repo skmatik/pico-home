@@ -38,14 +38,7 @@ void LcdDisplay::clear()
 
 void LcdDisplay::configureBackLight(bool enabled)
 {
-    if (enabled)
-    {
-        lcd.BacklightOn();
-    }
-    else
-    {
-        lcd.BacklightOff();
-    }
+    lcd.SetBacklight(enabled);
 }
 
 void LcdDisplay::topLeft()

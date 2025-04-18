@@ -27,6 +27,8 @@ private:
     static constexpr int MAIN_TASK_PRIORITY = tskIDLE_PRIORITY;
     static constexpr int SENSOR_TASK_STACK_SIZE = configMINIMAL_STACK_SIZE;
     static constexpr int SENSOR_TASK_PRIORITY = tskIDLE_PRIORITY;
+    static constexpr int INACTIVE_DISPLAY_INTERVAL_IN_MILLIS = 15 * ONE_SECOND_IN_MILLISECONDS;
+    static constexpr int MAIN_LOOP_REFRESH_INTERVAL_IN_MILLIS = 100;
 
     // In C++, the order of field initialization is defined by the order in which fields are declared in the class, NOT the order in the constructor initializer list.
     LcdDisplay lcdDisplay;
@@ -39,10 +41,6 @@ private:
     std::shared_ptr<std::vector<std::shared_ptr<Sensor>>> sensors;
 
     LcdMenu lcdMenu;
-    AtmosphericPressureSensor atmosphericPressureSensor;
-    IndoorTemperatureSensor indoorTemperatureSensor;
-    WaterPressureSensor waterPressureSensor;
-    DS18B20TemperatureSensor ds18b20TemperatureSensor;
     
     MQTTPublisher mqttPublisher;
     ArduinoTerminalReportBuilder arduinoTerminalReportBuilder;
@@ -50,11 +48,13 @@ private:
 
     TaskHandle_t mainTask;
     TaskHandle_t sensorTask;
+    int inactiveMiliseconds;
 
     static void updateSensors(__unused void *params);
     static void execute(__unused void *params);
     void loop();
     void initializeMenu();
+    void initializeSensors();
 
 public:
     MainController();
