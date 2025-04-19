@@ -31,6 +31,7 @@ public:
     ~DS18B20();
     void readTemperatures();
     int16_t getTemperature(uint64_t romCode);
+    bool isPresent(uint64_t romCode);
 };
 
 #endif // DS18B20_H

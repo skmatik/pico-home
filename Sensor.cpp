@@ -44,3 +44,5 @@ std::string Sensor::formatDoubleValue(double value) {
     formattedValueStream << value;
     return formattedValueStream.str();
 }
+
+const std::string Sensor::NA = "N/A";

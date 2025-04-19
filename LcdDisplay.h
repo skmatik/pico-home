@@ -6,13 +6,11 @@
 #include <memory>
 #include <iostream>
 #include "pico/binary_info/code.h"
+#include "I2CConfig.h"
 
 class LcdDisplay
 {
 private:
-    static constexpr i2c_inst_t *I2C = i2c1;
-    static constexpr uint32_t SDA = 6;
-    static constexpr uint32_t SCL = 7;
     static constexpr uint32_t I2C_ADDRESS = 0x27;
     static constexpr uint32_t LCD_COLUMNS = 20;
     static constexpr uint32_t LCD_ROWS = 4;

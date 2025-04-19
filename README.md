@@ -26,20 +26,19 @@ Raspberry PI Pico tasks
 - Donwload FreeRTOS Kernel release (e.g.: https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V11.2.0/FreeRTOS-KernelV11.2.0.zip) and extract it to ../FreeRTOS-KernelV11.2.0
 
 ## TODO
+- Ethernet - detect disconnection
+- Rotary encoder - finetune, create library
+- IC2 - extract configuration
+- BMP280 - refactor, document, create library
+- Create logger
+- BMP280 Sensor is hanging
+- Serial communication is oneway
+- Multicore version
+- SHT30 support
+
 - libraries/I2C_LCD - make a fork from https://github.com/cristiancristea00/Pico-I2C-LCD/tree/main and create library, add it as submodule to libraries folder
 - libraries/WIZnet-PICO-C/port
     - if possible create submodule with only port folder from https://github.com/WIZnet-ioNIC/WIZnet-PICO-C
     - modified files: timer.h, w5x00_spi.h - added extern C
 - libraries/bmp280_i2c - copy from pico examples
 - libraries/onewire_library - copy from prico examples - added extern C
-- Ethernet - detect disconnection
-- Rotary encoder - finetune, create library
-- IC2
-    - extract configuration
-    - extract initialization
-- BMP280 - refactor, document, create library
-- Create logger
-- BMP280 Sensor is hanging
-- Serial communication is oneway
-- Multicore version
-- DS18B20 - add logic that checks if sensor with supplied code is present.

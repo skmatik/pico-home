@@ -1,9 +1,6 @@
 #ifndef BMP280_I2C_H
 #define BMP280_I2C_H
 
-#define I2C_SDA 6
-#define I2C_SCL 7
-
 // device has default bus address of 0x76
 #define ADDR _u(0x76)
 

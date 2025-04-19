@@ -79,3 +79,15 @@ int16_t DS18B20::getTemperature(uint64_t romCode)
     }
     return 0;
 }
+
+bool DS18B20::isPresent(uint64_t romCode)
+{
+    for (int i = 0; i < foundDevices; i++)
+    {
+        if (romCodes[i] == romCode)
+        {
+            return true;
+        }
+    }
+    return false;
+}

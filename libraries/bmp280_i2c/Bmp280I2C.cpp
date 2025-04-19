@@ -11,6 +11,7 @@
 #include "pico/stdlib.h"
 #include "Bmp280I2C.h"
 #include <iostream>
+#include "I2CConfig.h"
 
 /* BMP280 I2C temperature and pressure sensor
 
@@ -27,11 +28,11 @@ BMP280I2C::BMP280I2C()
     std::cout << "Initializing BMP280" << std::endl;
 
     // I2C is "open drain", pull ups to keep signal high when no data is being sent
-    i2c_init(i2c1, 100 * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
+    i2c_init(I2C, 100 * 1000);
+    gpio_set_function(SDA, GPIO_FUNC_I2C);
+    gpio_set_function(SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(SDA);
+    gpio_pull_up(SCL);
 
     initialize();
 

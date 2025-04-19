@@ -15,6 +15,7 @@ private:
     const std::string unitsOfMeasurement;
 
 protected:
+    static const std::string NA;
     void setPresent(bool present);
     void setFormattedValue(const std::string &formattedValue);
     std::string formatDoubleValue(double value);
