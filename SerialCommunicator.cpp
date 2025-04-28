@@ -4,7 +4,7 @@
 #include "hardware/uart.h"
 #include "pico/stdlib.h"
 
-SerialCommunicator::SerialCommunicator(ArduinoTerminalReportBuilder &reportBuilder) : reportBuilder(reportBuilder)
+SerialCommunicator::SerialCommunicator(ArduinoTerminalReportBuilder &reportBuilder, std::shared_ptr<RemoteSensor> remoteSensor) : reportBuilder(reportBuilder), remoteSensor(std::move(remoteSensor))
 {
 }
 
@@ -17,7 +17,7 @@ void SerialCommunicator::execute(__unused void *params)
         std::cout << "Serial: execute" << std::endl;
         if (commandComplete)
         {
-            std::cout << "Serial: " << command << std::endl;
+            std::cout << "Serial command: " << command << std::endl;
             if (command == "{S@")
             {
                 serialCommunicator->writeResponse();
@@ -26,13 +26,10 @@ void SerialCommunicator::execute(__unused void *params)
             }
             else if (command.substr(0, 2) == "}T")
             {
-                if (commandComplete)
-                {
-                    std::cout << " temp from arduino: " << command.substr(2) << std::endl;
-                    // remoteSensor->updateTemperatureString(command);
-                    commandComplete = false;
-                    command.clear();
-                }
+                std::cout << "Temp from arduino: " << command.substr(2) << std::endl;
+                serialCommunicator->remoteSensor->updateTemperatureString(command);
+                commandComplete = false;
+                command.clear();
             }
             else
             {
@@ -41,8 +38,8 @@ void SerialCommunicator::execute(__unused void *params)
             }
         }
         vTaskDelay(pdMS_TO_TICKS(5000));
-        command = "{S@";
-        commandComplete = true;
+         command = "{S@";
+         commandComplete = true;
     }
 }
 
@@ -74,35 +71,30 @@ void SerialCommunicator::setupCommunication()
     // Now enable the UART to send interrupts - RX only
     //uart_set_irq_enables(uart_id, true, false);
 
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, false);
+
     xTaskCreate(SerialCommunicator::execute, "SerialCommunicatorThread", SERIAL_COMMUNICATION_TASK_STACK_SIZE, (void *)this, SERIAL_COMMUNICATION_TASK_PRIORITY, &task);
     std::cout << "Serial: initialized" << std::endl;
 }
 
 void SerialCommunicator::readUart()
 {
-    std::cout << "IRQ" << std::endl;
     std::string text;
+    gpio_put(PICO_DEFAULT_LED_PIN, true);
     while (uart_is_readable(uart1))
     {
-        std::cout << "IRQ1" << std::endl;
         uint8_t ch = uart_getc(uart1);
-        std::cout << "IRQ2" << std::endl;
         text.push_back(ch);
-        std::cout << "IRQ3" << std::endl;
-        // Can we send it back?
-        uart_putc(uart0, ch);
-        std::cout << "IRQ4" << std::endl;
         if (ch == '@')
         {
-            std::cout << "IRQ5" << std::endl;
+            gpio_put(PICO_DEFAULT_LED_PIN, false);
             commandComplete = true;
             break;
         }
     }
-    std::cout << "IRQ6" << std::endl;
     command.append(text);
-    std::cout << "IRQ7" << std::endl;
-
 }
 
 void SerialCommunicator::writeResponse()
@@ -113,6 +105,8 @@ void SerialCommunicator::writeResponse()
         sendLine(line);
         sendChar('$');
         // TODO: maybe needed: delay(100);
+        std::cout << "Serial: " << line << std::endl;
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
     sendChar('@');
 }

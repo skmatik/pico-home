@@ -20,9 +20,6 @@ private:
     constexpr static int ADC_GPIO = 26;   // GPIO pin for the water pressure sensor
 
     double pressure;
-
-    std::string formatValue();
-
 public:
     WaterPressureSensor();
     void read() override;

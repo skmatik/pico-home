@@ -26,7 +26,7 @@ private:
     static constexpr std::string_view MQTT_USERNAME = "skmatik";
     static constexpr std::string_view FEED_PREFIX = "skmatik/feeds/";
     static constexpr int MQTT_KEEP_ALIVE = 60;
-    static constexpr int MQTT_PUBLISH_PERIOD = 10 * 1000; // 10 seconds
+    static constexpr int MQTT_PUBLISH_PERIOD = 60 * 1000; // 60 seconds
     static constexpr int QOS = 1;
     static constexpr long TIMEOUT = 10000L;
     static constexpr long INTERVAL_IN_SECONDS = 10;

@@ -19,6 +19,7 @@ Raspberry PI Pico tasks
 - Rotary encoder is navigating on LCD display
 - FreeRTOS integrated
 - Serial communication with Arduino added
+- Watchdog enabled
 
 ## setup
 - Environment variable MQTT_PASSWORD should contain password during compilation
@@ -28,13 +29,14 @@ Raspberry PI Pico tasks
 ## TODO
 - Ethernet - detect disconnection
 - Rotary encoder - finetune, create library
-- IC2 - extract configuration
 - BMP280 - refactor, document, create library
 - Create logger
 - BMP280 Sensor is hanging
-- Serial communication is oneway
 - Multicore version
 - SHT30 support
+- Create config with hardware port definitions
+- Optimize to not scan DS18B20 sensors multiple times
+- Publish Watchdog reboots to mqtt
 
 - libraries/I2C_LCD - make a fork from https://github.com/cristiancristea00/Pico-I2C-LCD/tree/main and create library, add it as submodule to libraries folder
 - libraries/WIZnet-PICO-C/port

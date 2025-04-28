@@ -1,9 +1,12 @@
-#include "MainController.h"
 #include <iostream>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "hardware/watchdog.h"
+
+#include "MainController.h"
 #include "StringMenuItem.h"
 #include "ArduinoTerminalReportBuilder.h"
+#include "SystemTemperatureSensor.h"
 
 MainController::MainController(): lcdDisplay(LcdDisplay()),
 rotaryEncoder(RotaryEncoder()),
@@ -19,7 +22,8 @@ lcdMenu(LcdMenu(lcdDisplay, menuItems, 4)),
 
 mqttPublisher(MQTTPublisher(feeds, ethernetController)),
 arduinoTerminalReportBuilder(ArduinoTerminalReportBuilder(sensors)),
-serialCommunicator(SerialCommunicator(arduinoTerminalReportBuilder))
+remoteSensor(std::make_shared<RemoteSensor>("Obyvacka", "C")),
+serialCommunicator(SerialCommunicator(arduinoTerminalReportBuilder, remoteSensor))
 {
     inactiveMiliseconds = 0;
 }
@@ -54,6 +58,7 @@ std:
     }
 
     initializeSensors();
+    watchdog_enable(5000, 1);
 
     xTaskCreate(MainController::execute, "MainThread", MAIN_TASK_STACK_SIZE, (void *)this, MAIN_TASK_PRIORITY, &mainTask);
     xTaskCreate(MainController::updateSensors, "SensorThread", SENSOR_TASK_STACK_SIZE, (void *)this, SENSOR_TASK_PRIORITY, &sensorTask);
@@ -64,21 +69,17 @@ std:
 void MainController::initializeSensors()
 {
     std::cout << "Initializing sensors!" << std::endl;
-    std::shared_ptr<Sensor> sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Sonda1", 0xd6011591ac3fff28));
-    sensors->push_back(sensor);
-    feeds->push_back(std::make_unique<MQTTFeed>("room-temperature", sensor));
-
-    sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Kotol", 0xbd182706000028));
+    std::shared_ptr<Sensor> sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Kotol", 0x360000062718bd28));
     sensors->push_back(sensor);
     feeds->push_back(std::make_unique<MQTTFeed>("heater", sensor));
   
-    sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Bojler", 0x34340806000028));
+    sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Bojler", 0x7900000608343428));
     sensors->push_back(sensor);
     feeds->push_back(std::make_unique<MQTTFeed>("water-heater", sensor));
   
-    sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Spiatocka", 0xabfc0706000028));
+    sensor = std::make_shared<DS18B20TemperatureSensor>(DS18B20TemperatureSensor(ds18b20, "Spiatocka", 0x6a00000607fcab28));
     sensors->push_back(sensor);
-    feeds->push_back(std::make_unique<MQTTFeed>("heat-feedback", sensor));
+    feeds->push_back(std::make_unique<MQTTFeed>("heater-feedback", sensor));
 
     sensor = std::make_shared<WaterPressureSensor>(WaterPressureSensor());
     sensors->push_back(sensor);
@@ -86,12 +87,17 @@ void MainController::initializeSensors()
 
     sensor = std::make_shared<AtmosphericPressureSensor>(AtmosphericPressureSensor(bmp280I2c));
     sensors->push_back(sensor);
-    feeds->push_back(std::make_unique<MQTTFeed>("atmospheric-pressure", sensor));
+    //feeds->push_back(std::make_unique<MQTTFeed>("atmospheric-pressure", sensor));
     
     sensor = std::make_shared<IndoorTemperatureSensor>(IndoorTemperatureSensor(bmp280I2c));
     sensors->push_back(sensor);
-    feeds->push_back(std::make_unique<MQTTFeed>("basement-temperature", sensor));
+    //feeds->push_back(std::make_unique<MQTTFeed>("basement-temperature", sensor));
 
+    //sensors->push_back(remoteSensor);
+    //feeds->push_back(std::make_unique<MQTTFeed>("livingroom-temperature", remoteSensor));
+
+    sensor = std::make_shared<SystemTemperatureSensor>(SystemTemperatureSensor());
+    feeds->push_back(std::make_unique<MQTTFeed>("system-temperature", sensor));
 }
 
 void MainController::initializeMenu()
@@ -114,7 +120,7 @@ void MainController::updateSensors(__unused void *parameters)
         for (std::shared_ptr<Sensor> sensor : *mainController->sensors)
         {
             sensor->read();
-            std::cout << sensor->getSensorName() << ": " << sensor->getFormattedValue() << " " << sensor->getUnitsOfMeasurement() << std::endl;
+            //std::cout << sensor->getSensorName() << ": " << sensor->getFormattedValue() << " " << sensor->getUnitsOfMeasurement() << std::endl;
         }
         vTaskDelay(pdMS_TO_TICKS(10000));
     }
@@ -126,8 +132,9 @@ void MainController::execute(__unused void *parameters)
     mainController->initializeMenu();
     while (true)
     {
+        watchdog_update();
         mainController->loop();
-        vTaskDelay(pdMS_TO_TICKS(MAIN_LOOP_REFRESH_INTERVAL_IN_MILLIS)); // Delay for 100 ms
+        vTaskDelay(pdMS_TO_TICKS(MAIN_LOOP_REFRESH_INTERVAL_IN_MILLIS));
     }
 }
 
@@ -137,7 +144,6 @@ void MainController::loop()
     if (inactiveMiliseconds > INACTIVE_DISPLAY_INTERVAL_IN_MILLIS)
     {
         backlightEnabled = false;
-        std::cout << "Inactive display!" << std::endl;
     }
     else
     {

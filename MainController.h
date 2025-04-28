@@ -44,6 +44,7 @@ private:
     
     MQTTPublisher mqttPublisher;
     ArduinoTerminalReportBuilder arduinoTerminalReportBuilder;
+    std::shared_ptr<RemoteSensor> remoteSensor;
     SerialCommunicator serialCommunicator;
 
     TaskHandle_t mainTask;

@@ -8,6 +8,7 @@
 
 #include "ArduinoTerminalReportBuilder.h"
 #include "TimeConstants.h"
+#include "RemoteSensor.h"
 
 class SerialCommunicator
 {
@@ -27,18 +28,21 @@ private:
     static uart_inst_t* uart_id;
     static std::string command;
     static bool commandComplete;
-    ArduinoTerminalReportBuilder reportBuilder;
-    TaskHandle_t task;
-
+    
     static void readUart();
     static void execute(__unused void *params);
+
+
+    ArduinoTerminalReportBuilder reportBuilder;
+    TaskHandle_t task;
+    std::shared_ptr<RemoteSensor> remoteSensor;
 
     void writeResponse();
     void sendLine(std::string_view line);
     void sendChar(char c);
 
 public:
-    SerialCommunicator(ArduinoTerminalReportBuilder& reportBuilder);
+    SerialCommunicator(ArduinoTerminalReportBuilder& reportBuilder, std::shared_ptr<RemoteSensor> remoteSensor);
     void setupCommunication();
 };
 

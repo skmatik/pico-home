@@ -184,16 +184,12 @@ void BMP280I2C::print()
 
 double BMP280I2C::getTemperatureInDegC()
 {
-    std::cout << "get Temperature " << std::endl;
     //readRawData(&rawTemperature, &rawPressure);
-    std::cout << "get Temperature 2" << std::endl;
     return convertTemperature(rawTemperature) / 100.f;
 }
 
 double BMP280I2C::getPressureInkPa()
 {
-    std::cout << "get Pressure " << std::endl;
     //readRawData(&rawTemperature, &rawPressure);
-    std::cout << "get Pressure 2" << std::endl;
     return convertPressure(rawPressure, rawTemperature) / 1000.f;
 }

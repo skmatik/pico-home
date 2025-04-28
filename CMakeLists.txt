@@ -92,7 +92,8 @@ include(FreeRTOS_Kernel_import.cmake)
 
 add_executable(pico-home Main.cpp Sensor.cpp MainController.cpp EthernetController.cpp MqttPublisher.cpp MqttFeed.cpp LcdDisplay.cpp
 RotaryEncoder.cpp AtmosphericPressureSensor.cpp IndoorTemperatureSensor.cpp LcdMenu.cpp SensorMenuItem.cpp StringMenuItem.cpp
-WaterPressureSensor.cpp DS18B20.cpp DS18B20TemperatureSensor.cpp SerialCommunicator.cpp ArduinoTerminalReportBuilder.cpp)
+WaterPressureSensor.cpp DS18B20.cpp DS18B20TemperatureSensor.cpp SerialCommunicator.cpp ArduinoTerminalReportBuilder.cpp RemoteSensor.cpp
+SystemTemperatureSensor.cpp)
 
 pico_set_program_name(pico-home "pico-home")
 pico_set_program_version(pico-home "1.0")
