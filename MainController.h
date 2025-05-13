@@ -29,6 +29,9 @@ private:
     static constexpr int SENSOR_TASK_PRIORITY = tskIDLE_PRIORITY;
     static constexpr int INACTIVE_DISPLAY_INTERVAL_IN_MILLIS = 15 * ONE_SECOND_IN_MILLISECONDS;
     static constexpr int MAIN_LOOP_REFRESH_INTERVAL_IN_MILLIS = 100;
+    static const std::string REBOOT_FEED_NAME;
+    static const std::string REBOOT_CLEAN;
+    static const std::string REBOOT_WATCHDOG;
 
     // In C++, the order of field initialization is defined by the order in which fields are declared in the class, NOT the order in the constructor initializer list.
     LcdDisplay lcdDisplay;

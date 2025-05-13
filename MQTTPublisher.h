@@ -44,7 +44,10 @@ private:
 
     static void publishTask(__unused void *params);
     void logResult(uint8_t retval, const std::string &message);
-    void publishOneMessage(std::string &feedTopic, MQTTMessage &g_mqtt_message);
+
+    static void createMessage(const std::string &value, MQTTMessage &mqttMessage);
+
+    void publishOneMessage(const std::string &feedTopic, MQTTMessage &g_mqtt_message);
     void publish();
     void connect();
     void disconnect();
@@ -52,6 +55,7 @@ public:
     MQTTPublisher(std::shared_ptr<std::vector<std::unique_ptr<MQTTFeed>>> feeds, EthernetController &ethernetController);
     virtual ~MQTTPublisher();
     bool isConnected();
+    void publishMessage(const std::string &feedTopic, const std::string &value);
 };
 
 #endif // MQTTPUBLISHER_H

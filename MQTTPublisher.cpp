@@ -18,6 +18,14 @@ bool MQTTPublisher::isConnected()
     return mqttConnected;
 }
 
+void MQTTPublisher::publishMessage(const std::string &feedTopic, const std::string &value) {
+    connect();
+    MQTTMessage mqttMessage;
+    createMessage(value, mqttMessage);
+    std::string feedTopicFullName = string(FEED_PREFIX).append(feedTopic);
+    publishOneMessage(feedTopicFullName, mqttMessage);
+}
+
 void MQTTPublisher::connect()
 {
     NewNetwork(&mqttNetwork, SOCKET_MQTT);
@@ -61,6 +69,15 @@ void MQTTPublisher::logResult(uint8_t retval, const std::string &message)
     }
 }
 
+void MQTTPublisher::createMessage(const std::string &feedValue, MQTTMessage &mqttMessage) {
+    mqttMessage.qos = QOS0;
+    mqttMessage.retained = 0;
+    mqttMessage.dup = 0;
+    const char* value = feedValue.c_str();
+    mqttMessage.payload = (void *) value;
+    mqttMessage.payloadlen = strlen(value);
+}
+
 void MQTTPublisher::publish()
 {
 
@@ -71,21 +88,16 @@ void MQTTPublisher::publish()
             if (feed->isPresent())
             {
                 //cout << "Publishing feed: " << feed->getFeedName() << endl;
-                MQTTMessage g_mqtt_message;
-                g_mqtt_message.qos = QOS0;
-                g_mqtt_message.retained = 0;
-                g_mqtt_message.dup = 0;
-                const char* value = feed->getFeedValue().c_str();
-                g_mqtt_message.payload = (void *) value;
-                g_mqtt_message.payloadlen = strlen(value);
+                MQTTMessage mqttMessage;
+                createMessage(feed->getFeedValue(), mqttMessage);
 
                 string feedTopic = string(FEED_PREFIX).append(feed->getFeedName());
-                publishOneMessage(feedTopic, g_mqtt_message);
+                publishOneMessage(feedTopic, mqttMessage);
             }
         }
 }
 
-void MQTTPublisher::publishOneMessage(std::string &feedTopic, MQTTMessage &g_mqtt_message)
+void MQTTPublisher::publishOneMessage(const std::string &feedTopic, MQTTMessage &g_mqtt_message)
 {
     //cout << "Publishing: " << (char*) g_mqtt_message.payload << " to feed: " << feedTopic << endl;
     uint8_t retval = MQTTPublish(&mqttClient, feedTopic.c_str(), &g_mqtt_message);
@@ -115,6 +127,8 @@ void MQTTPublisher::publishTask(__unused void *params)
         vTaskDelay(pdMS_TO_TICKS(MQTT_PUBLISH_PERIOD));
     }
 }
+
+
 
 uint8_t MQTTPublisher::sendBuffer[ETHERNET_BUFFER_SIZE] = {0};
 uint8_t MQTTPublisher::receiveBuffer[ETHERNET_BUFFER_SIZE] = {0};
